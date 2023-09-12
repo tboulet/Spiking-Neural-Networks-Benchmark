@@ -1,0 +1,7 @@
+*.pyc
+wandb/*
+*.pt
+Datasets
+models/
+spikingjelly/
+venv/
