@@ -142,16 +142,16 @@ class Config:
     wandb_token = 'your_wandb_token'
     wandb_project_name = 'Wandb Project Name'
 
-    run_name = 'training'
+    run_name = 'Wandb Run Name'
 
 
-    run_info = f'_{model_type}_{dataset}_{time_step}ms_bins={n_bins}'
+    run_info = f'||{model_type}||{dataset}||{time_step}ms||bins={n_bins}'
 
-    wandb_run_name = run_name + f'_seed={seed}' + run_info
+    wandb_run_name = run_name + f'||seed={seed}' + run_info
     wandb_group_name = run_name + run_info
 
     # REPL is going to be replaced with best_acc or best_loss for best model according to validation accuracy or loss
-    save_model_path = f'models/{wandb_run_name}_REPL.pt'
+    save_model_path = f'{wandb_run_name}_REPL.pt'
 
 
     wandb_run_name_finetuning = wandb_run_name.replace('(Pre-train)', 

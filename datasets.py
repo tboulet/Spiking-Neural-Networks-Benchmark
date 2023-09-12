@@ -201,7 +201,7 @@ def cifar10_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
 
   # Create data loaders for training, validation, and testing
   train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
-                                              num_workers=5, pin_memory=True,)
+                                              num_workers=0, pin_memory=True,)
   valid_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
                                               num_workers=0, pin_memory=True,)
   test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False,

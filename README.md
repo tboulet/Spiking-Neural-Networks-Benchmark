@@ -11,7 +11,7 @@ Install SpikingJelly using:
 ```
 git clone https://github.com/fangwei123456/spikingjelly.git
 cd spikingjelly
-python setup.py install --user
+pip install -e .
 ```
 Installing SpikingJelly using ```pip``` is not yet compatible with this repo.
 
