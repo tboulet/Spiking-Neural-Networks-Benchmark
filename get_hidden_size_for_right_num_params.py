@@ -50,5 +50,5 @@ if __name__ == "__main__":
     ni = 3*32*32
     no = 10
     n_hidden_layers = 4
-    for n_param in [100, k, 10*k, 100*k, M]:
+    for n_param in [100, k, 10*k, 100*k, M, 10*M]:
         print(f"CIFAR10: for {n_param} parameters, use {get_hidden_size_for_right_num_params_fn(ni, n_hidden_layers, no, n_param)} hidden neurons")

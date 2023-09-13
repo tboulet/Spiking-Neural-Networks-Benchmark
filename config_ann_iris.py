@@ -36,7 +36,7 @@ class Config:
 
     n_inputs = 4
     n_hidden_layers = 2
-    n_hidden_neurons = 311
+    n_hidden_neurons = 31
     n_outputs = 3
 
     sparsity_p = 0
