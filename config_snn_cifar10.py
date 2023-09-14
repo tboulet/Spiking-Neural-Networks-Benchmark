@@ -34,7 +34,7 @@ class Config:
 
     n_inputs = 3072
     n_hidden_layers = 4
-    n_hidden_neurons = 150
+    n_hidden_neurons = 875
     n_outputs = 10
 
     sparsity_p = 0
@@ -136,7 +136,7 @@ class Config:
     #############################################
     # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names.
 
-    use_wandb = False
+    use_wandb = True
     wandb_token = "56b9cf4d7820ac3d475765431891c12aa399e027"
     wandb_project_name = "SpikedNN"
 

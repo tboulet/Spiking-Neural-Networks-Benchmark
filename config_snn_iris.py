@@ -1,4 +1,4 @@
-from compute_h_for_right_n_param import get_number_of_parameters
+from get_hidden_size_for_right_num_params import get_number_of_parameters
 from spikingjelly.activation_based import surrogate
 
 class Config:
@@ -36,7 +36,7 @@ class Config:
 
     n_inputs = 4
     n_hidden_layers = 2
-    n_hidden_neurons = 256 
+    n_hidden_neurons = 219
     n_outputs = 3
 
     sparsity_p = 0
@@ -146,9 +146,8 @@ class Config:
     run_name = 'training'
 
 
-    run_info = f'_{model_type}_{dataset}_{time_step}ms_bins={n_bins}'
-    n_param = get_number_of_parameters(n_inputs, n_hidden_layers, n_outputs, n_hidden_neurons)
-    run_info = f'_{model_type}_{dataset}_{n_param}parameters'
+    # run_info = f'_{model_type}_{dataset}_{time_step}ms_bins={n_bins}'    
+    run_info = f'_{model_type}_{dataset}_{n_hidden_neurons}hiddenNeurons'
     
     wandb_run_name = run_name + f'_seed={seed}' + run_info
     wandb_group_name = run_name + run_info
