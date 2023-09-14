@@ -28,10 +28,14 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
 
-
 class RNoise(object):
-    def __init__(self, sig):
-        self.sig = sig
+
+  def __init__(self, sig):
+    self.sig = sig
+
+  def __call__(self, sample):
+    noise = np.abs(np.random.normal(0, self.sig, size=sample.shape).round())
+    return sample + noise
 
     def __call__(self, sample):
         noise = np.abs(np.random.normal(0, self.sig, size=sample.shape).round())
@@ -42,14 +46,18 @@ class TimeNeurons_mask_aug(object):
     def __init__(self, config):
         self.config = config
 
-    def __call__(self, x, y):
-        # Sample shape: (time, neurons)
-        for sample in x:
-            # Time mask
-            if np.random.uniform() < self.config.TN_mask_aug_proba:
-                mask_size = np.random.randint(0, self.config.time_mask_size)
-                ind = np.random.randint(0, sample.shape[0] - self.config.time_mask_size)
-                sample[ind : ind + mask_size, :] = 0
+  def __init__(self, config):
+    self.config = config
+
+
+  def __call__(self, x, y):
+    # Sample shape: (time, neurons)
+    for sample in x:
+      # Time mask
+      if np.random.uniform() < self.config.TN_mask_aug_proba:
+        mask_size = np.random.randint(0, self.config.time_mask_size)
+        ind = np.random.randint(0, sample.shape[0] - self.config.time_mask_size)
+        sample[ind:ind+mask_size, :] = 0
 
             # Neuron mask
             if np.random.uniform() < self.config.TN_mask_aug_proba:
@@ -63,14 +71,28 @@ class TimeNeurons_mask_aug(object):
 
 
 class CutMix(object):
-    """
-    Apply Spectrogram-CutMix augmentaiton which only cuts patch across time axis unlike
-    typical Computer-Vision CutMix. Applies CutMix to one batch and its shifted version.
+  """
+  Apply Spectrogram-CutMix augmentaiton which only cuts patch across time axis unlike
+  typical Computer-Vision CutMix. Applies CutMix to one batch and its shifted version.
 
-    """
+  """
 
-    def __init__(self, config):
-        self.config = config
+  def __init__(self, config):
+    self.config = config
+
+
+  def __call__(self, x, y):
+
+    # x shape: (batch, time, neurons)
+    # Go to L-1, no need to augment last sample in batch (for ease of coding)
+
+    for i in range(x.shape[0]-1):
+      # other sample to cut from
+      j = i+1
+
+      if np.random.uniform() < self.config.cutmix_aug_proba:
+        lam = np.random.uniform()
+        cut_size = int(lam * x[j].shape[0])
 
     def __call__(self, x, y):
         # x shape: (batch, time, neurons)
@@ -98,9 +120,15 @@ class Augs(object):
         self.config = config
         self.augs = [TimeNeurons_mask_aug(config), CutMix(config)]
 
-    def __call__(self, x, y):
-        for aug in self.augs:
-            x, y = aug(x, y)
+  def __init__(self, config):
+    self.config = config
+    self.augs = [TimeNeurons_mask_aug(config), CutMix(config)]
+
+  def __call__(self, x, y):
+    for aug in self.augs:
+      x, y = aug(x, y)
+
+    return x, y
 
         return x, y
 
@@ -192,20 +220,31 @@ class Flatten(torch.nn.Module):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(mean={self.mean}, std={self.std})"
 
+class FlattenColor(torch.nn.Module):
 
-class Repeat(torch.nn.Module):
-    def __init__(self, n):
+    def __init__(self):
         super().__init__()
-        self.n = n
 
     def forward(self, tensor: torch.Tensor) -> torch.Tensor:
-        """ """
-        return tensor.repeat(self.n, 1)
+        """
+        """
+        return tensor.reshape(-1, 32)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(mean={self.mean}, std={self.std})"
+
 
 
 def cifar10_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
-    set_seed(config.seed)
-    batch_size = config.batch_size
+
+  set_seed(config.seed)
+  batch_size = config.batch_size
+
+  transform = transforms.Compose([
+      transforms.ToTensor(),  # Converts images to tensors
+      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize image pixel values
+      Flatten(),
+  ])
 
     transform = transforms.Compose(
         [
@@ -226,105 +265,60 @@ def cifar10_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
         root=config.datasets_path, train=False, transform=transform, download=True
     )
 
-    # Split the training dataset into training and validation sets
-    num_train = len(train_dataset)
-    indices = list(range(num_train))
-    split = int(valid_size * num_train)
-    if shuffle:
-        torch.manual_seed(42)  # For reproducibility
-        indices = torch.randperm(num_train)
+  # Create data loaders for training, validation, and testing
+  train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                              num_workers=0, pin_memory=True,)
+  valid_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                              num_workers=0, pin_memory=True,)
+  test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False,
+                                            num_workers=0, pin_memory=True,)
 
-    # Create data loaders for training, validation, and testing
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        num_workers=0,
-        pin_memory=True,
-    )
-    valid_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        num_workers=0,
-        pin_memory=True,
-    )
-    test_loader = torch.utils.data.DataLoader(
-        test_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=0,
-        pin_memory=True,
-    )
+  # Print the dataset sizes and shapes
+  print(f"Train dataset size: {len(train_loader.sampler)}")
+  print(f"Validation dataset size: {len(valid_loader.sampler)}")
+  print(f"Test dataset size: {len(test_loader.sampler)}")
+  print(f"Image shape: {train_dataset[0][0].shape}")
+  print(f"Number of classes: {len(train_dataset.classes)}")
 
-    # Print the dataset sizes and shapes
-    print(f"Train dataset size: {len(train_loader.sampler)}")
-    print(f"Validation dataset size: {len(valid_loader.sampler)}")
-    print(f"Test dataset size: {len(test_loader.sampler)}")
-    print(f"Image shape: {train_dataset[0][0].shape}")
-    print(f"Number of classes: {len(train_dataset.classes)}")
+  return train_loader, valid_loader, test_loader
 
-    return train_loader, valid_loader, test_loader
+def cifar10_line_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
 
+  set_seed(config.seed)
+  batch_size = config.batch_size
 
-def cifar10_repeat_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
-    set_seed(config.seed)
-    batch_size = config.batch_size
+  transform = transforms.Compose([
+      transforms.ToTensor(),  # Converts images to tensors
+      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize image pixel values,
+      FlattenColor(),
+  ])
 
-    transform = transforms.Compose(
-        [
-            transforms.ToTensor(),  # Converts images to tensors
-            transforms.Normalize(
-                (0.5, 0.5, 0.5), (0.5, 0.5, 0.5)
-            ),  # Normalize image pixel values
-            Flatten(),
-            Repeat(config.max_delay),
-        ]
-    )
+  # Download CIFAR-10 dataset if not already downloaded
+  train_dataset = torchvision.datasets.CIFAR10(root=config.datasets_path, train=True, transform=transform, download=True)
+  test_dataset = torchvision.datasets.CIFAR10(root=config.datasets_path, train=False, transform=transform, download=True)
 
-    # Download CIFAR-10 dataset if not already downloaded
-    train_dataset = torchvision.datasets.CIFAR10(
-        root=config.datasets_path, train=True, transform=transform, download=True
-    )
-    test_dataset = torchvision.datasets.CIFAR10(
-        root=config.datasets_path, train=False, transform=transform, download=True
-    )
+  # Split the training dataset into training and validation sets
+  num_train = len(train_dataset)
+  if shuffle:
+      torch.manual_seed(42)  # For reproducibility
+      indices = torch.randperm(num_train)
 
-    # Split the training dataset into training and validation sets
-    num_train = len(train_dataset)
-    indices = list(range(num_train))
-    split = int(valid_size * num_train)
-    if shuffle:
-        torch.manual_seed(42)  # For reproducibility
-        indices = torch.randperm(num_train)
+  # Create data loaders for training, validation, and testing
+  train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                              num_workers=0, pin_memory=True,)
+  valid_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                              num_workers=0, pin_memory=True,)
+  test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False,
+                                            num_workers=0, pin_memory=True,)
 
-    # Create data loaders for training, validation, and testing
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        num_workers=0,
-        pin_memory=True,
-    )
-    valid_loader = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        num_workers=0,
-        pin_memory=True,
-    )
-    test_loader = torch.utils.data.DataLoader(
-        test_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=0,
-        pin_memory=True,
-    )
+  # Print the dataset sizes and shapes
+  print(f"Train dataset size: {len(train_loader.sampler)}")
+  print(f"Validation dataset size: {len(valid_loader.sampler)}")
+  print(f"Test dataset size: {len(test_loader.sampler)}")
+  print(f"Image shape: {train_dataset[0][0].shape}")
+  print(f"Number of classes: {len(train_dataset.classes)}")
 
-    # Print the dataset sizes and shapes
-    print(f"Train dataset size: {len(train_loader.sampler)}")
-    print(f"Validation dataset size: {len(valid_loader.sampler)}")
-    print(f"Test dataset size: {len(test_loader.sampler)}")
-    print(f"Image shape: {train_dataset[0][0].shape}")
-    print(f"Number of classes: {len(train_dataset.classes)}")
-
-    return train_loader, valid_loader, test_loader
+  return train_loader, valid_loader, test_loader
 
 
 def SSC_dataloaders(config):
@@ -599,45 +593,6 @@ def build_transform(is_train):
     )
 
     return transforms.Compose(t)
-
-
-labels = [
-    "backward",
-    "bed",
-    "bird",
-    "cat",
-    "dog",
-    "down",
-    "eight",
-    "five",
-    "follow",
-    "forward",
-    "four",
-    "go",
-    "happy",
-    "house",
-    "learn",
-    "left",
-    "marvin",
-    "nine",
-    "no",
-    "off",
-    "on",
-    "one",
-    "right",
-    "seven",
-    "sheila",
-    "six",
-    "stop",
-    "three",
-    "tree",
-    "two",
-    "up",
-    "visual",
-    "wow",
-    "yes",
-    "zero",
-]
 
 
 def target_transform(word):
