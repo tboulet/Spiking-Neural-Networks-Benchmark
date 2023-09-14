@@ -14,7 +14,7 @@ class Config:
     seed = 0
 
     # model type could be set to : 'snn_delays' |  'snn_delays_lr0' |  'snn'
-    model_type = "snn_delays"
+    model_type = "snn"#_delays"
 
     time_step = 10
     n_bins = 5
@@ -34,7 +34,7 @@ class Config:
 
     n_inputs = 3072
     n_hidden_layers = 4
-    n_hidden_neurons = 150
+    n_hidden_neurons = 250
     n_outputs = 10
 
     sparsity_p = 0
