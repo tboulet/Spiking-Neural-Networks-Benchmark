@@ -254,7 +254,7 @@ class Model(nn.Module):
 
             for i, (x, y, *_) in enumerate(tqdm(train_loader)):
                 # x for shd and ssc is: (batch, time, neurons)
-                y = F.one_hot(y, self.config.n_outputs).float()
+                y = F.one_hot(y.to(torch.int64), self.config.n_outputs).float()
 
                 if self.config.augment:
                     x, y = augmentations(x, y)
