@@ -1,17 +1,19 @@
+from utils import set_seed
+from datetime import datetime
+from uuid import uuid4
+import os
+
 import numpy as np
+from tqdm import tqdm
 import wandb
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-from config import Config
-from utils import set_seed
-from datasets import Augs
-from tqdm import tqdm
-from datetime import datetime
-from uuid import uuid4
-import os
+from snn_benchmark.configs import Config
+from snn_benchmark.data.base_datasets import Augs
 
 eventid = datetime.now().strftime("%Y%m-%d%H-%M%S-") + str(uuid4())
 
@@ -269,7 +271,8 @@ class Model(nn.Module):
 
                 y = y.to(device)
 
-                for opt in optimizers: opt.zero_grad()
+                for opt in optimizers:
+                    opt.zero_grad()
                 output = self.forward(x)
                 loss = self.calc_loss(output, y)
 
@@ -385,7 +388,9 @@ class Model(nn.Module):
                 wandb.log(wandb_logs)
 
             os.makedirs(self.config.save_model_path, exist_ok=True)
-            if  metric_valid > best_metric_val:#  and (self.config.model_type != 'snn_delays' or epoch >= self.config.final_epoch - 1):
+            if (
+                metric_valid > best_metric_val
+            ):  #  and (self.config.model_type != 'snn_delays' or epoch >= self.config.final_epoch - 1):
                 print("# Saving best Metric model...")
                 torch.save(
                     self.state_dict(),
@@ -393,7 +398,9 @@ class Model(nn.Module):
                 )
                 best_metric_val = metric_valid
 
-            if  loss_valid < best_loss_val:#  and (self.config.model_type != 'snn_delays' or epoch >= self.config.final_epoch - 1):
+            if (
+                loss_valid < best_loss_val
+            ):  #  and (self.config.model_type != 'snn_delays' or epoch >= self.config.final_epoch - 1):
                 print("# Saving best Loss model...")
                 torch.save(
                     self.state_dict(),
@@ -401,7 +408,9 @@ class Model(nn.Module):
                 )
                 best_loss_val = loss_valid
 
-            if  metric_test > best_metric_test:#  and (self.config.model_type != 'snn_delays' or epoch >= self.config.final_epoch - 1):
+            if (
+                metric_test > best_metric_test
+            ):  #  and (self.config.model_type != 'snn_delays' or epoch >= self.config.final_epoch - 1):
                 best_metric_test = metric_test
 
         if self.config.use_wandb:

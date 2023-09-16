@@ -1,0 +1,6 @@
+setup.py
+snn_benchmark.egg-info/PKG-INFO
+snn_benchmark.egg-info/SOURCES.txt
+snn_benchmark.egg-info/dependency_links.txt
+snn_benchmark.egg-info/requires.txt
+snn_benchmark.egg-info/top_level.txt

@@ -1,4 +1,4 @@
-from datasets import SHD_dataloaders, SSC_dataloaders, GSC_dataloaders
+from datasets.datasets import SHD_dataloaders, SSC_dataloaders, GSC_dataloaders
 from config import Config
 from snn_delays import SnnDelays
 import torch

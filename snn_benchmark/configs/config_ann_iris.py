@@ -1,3 +1,4 @@
+from snn_benchmark.get_hidden_size_for_right_num_params import get_number_of_parameters
 from spikingjelly.activation_based import surrogate
 
 
@@ -8,19 +9,19 @@ class Config:
     debug = False
 
     # dataset could be set to either 'shd', 'ssc' or 'gsc', change datasets_path accordingly.
-    dataset = "cifar10"
-    datasets_path = "Datasets/CIFAR10"
+    dataset = "iris"
+    datasets_path = "Datasets/IRIS"
 
     seed = 0
 
     # model type could be set to : 'snn_delays' |  'snn_delays_lr0' |  'snn'
-    model_type = "snn"#_delays"
+    model_type = "ann"
 
     time_step = 10
     n_bins = 5
 
     epochs = 150
-    batch_size = 512
+    batch_size = 256
 
     ################################################
     #               Model Achitecture              #
@@ -32,10 +33,10 @@ class Config:
     stateful_synapse = False
     stateful_synapse_learnable = False
 
-    n_inputs = 3072
-    n_hidden_layers = 4
-    n_hidden_neurons = 250
-    n_outputs = 10
+    n_inputs = 4
+    n_hidden_layers = 2
+    n_hidden_neurons = 31
+    n_outputs = 3
 
     sparsity_p = 0
 
@@ -136,13 +137,17 @@ class Config:
     #############################################
     # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names.
 
-    use_wandb = False
+    use_wandb = True
     wandb_token = "56b9cf4d7820ac3d475765431891c12aa399e027"
     wandb_project_name = "SpikedNN"
 
     run_name = "training"
 
-    run_info = f"_{model_type}_{dataset}_{time_step}ms_bins={n_bins}"
+    # run_info = f'_{model_type}_{dataset}_{time_step}ms_bins={n_bins}'
+    n_param = get_number_of_parameters(
+        n_inputs, n_hidden_layers, n_outputs, n_hidden_neurons
+    )
+    run_info = f"_{model_type}_{dataset}_{n_param}parameters"
 
     wandb_run_name = run_name + f"_seed={seed}" + run_info
     wandb_group_name = run_name + run_info
