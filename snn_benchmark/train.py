@@ -24,6 +24,7 @@ from configs import (
     ConfigSNNCIFAR10,
     ConfigSNNCIFAR10LINE,
     ConfigSNNREPEATCIFAR10,
+    ConfigHAR
 )
 
 config_mapping = {
@@ -36,8 +37,8 @@ config_mapping = {
     "SNN_CIFAR10": (ConfigSNNCIFAR10, cifar10_dataloaders, None),
     "SNN_CIFAR10_LINE": (ConfigSNNCIFAR10LINE, cifar10_dataloaders, None),
     "SNN_REPEAT_CIFAR10": (ConfigSNNREPEATCIFAR10, cifar10_repeat_dataloaders, None),
-    "SNN_HAR": (Config, HAR_dataloaders, None),
-    "CONV1D_HAR": (Config, HAR_dataloaders, TimeSeriesCNN),
+    "SNN_HAR": (ConfigHAR, HAR_dataloaders, None),
+    # "CONV1D_HAR": (Config, HAR_dataloaders, TimeSeriesCNN),
 }
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -45,7 +46,7 @@ print(f"\n=====> Device = {device} \n\n")
 
 
 def launch(config_name='CONV1D_HAR'):
-    config, dataloaders, model = config_mapping.get(config_name, Config)
+    config, dataloaders, model = config_mapping.get(config_name, (Config, HAR_dataloaders, None))
     train_loader, valid_loader, test_loader = dataloaders(config)
 
     if model is None:

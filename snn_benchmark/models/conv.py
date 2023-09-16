@@ -13,7 +13,7 @@ import numpy as np
 from models.model import Model
 
 
-class TimeSeriesCNN(nn.Module):
+class TimeSeriesCNN(Model):
     def __init__(self, config):
         super().__init__(config)
 

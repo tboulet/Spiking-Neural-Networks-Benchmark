@@ -8,3 +8,4 @@ from snn_benchmark.configs.config_ann_cifar10 import Config as ConfigANNCIFAR10
 from snn_benchmark.configs.config_snn_cifar10 import Config as ConfigSNNCIFAR10
 from snn_benchmark.configs.config_snn_cifar10_line import Config as ConfigSNNCIFAR10LINE
 from snn_benchmark.configs.config_snn_repeat_cifar10 import Config as ConfigSNNREPEATCIFAR10
+from snn_benchmark.configs.config_har import Config as ConfigHAR
