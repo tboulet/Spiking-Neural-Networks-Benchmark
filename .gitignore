@@ -6,3 +6,4 @@ spikingjelly/
 venv/
 # Remove all files starting with train_ and ending with .py
 train_*.py
+*.egg-info/*
