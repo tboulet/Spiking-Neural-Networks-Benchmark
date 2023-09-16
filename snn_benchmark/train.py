@@ -46,7 +46,9 @@ print(f"\n=====> Device = {device} \n\n")
 
 
 def launch(config_name='CONV1D_HAR'):
-    config, dataloaders, model = config_mapping.get(config_name, (Config, HAR_dataloaders, None))
+    print(f"Launching with configuration : {config_name}")
+
+    config, dataloaders, model = config_mapping.get(config_name, (ConfigHAR, HAR_dataloaders, None))
     train_loader, valid_loader, test_loader = dataloaders(config)
 
     if model is None:

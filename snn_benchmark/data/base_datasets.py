@@ -1,6 +1,5 @@
 from utils import set_seed
 
-import augmentations
 import numpy as np
 
 from typing import Callable, Optional
@@ -16,6 +15,7 @@ from torchaudio.datasets.speechcommands import SPEECHCOMMANDS
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 
+import snn_benchmark.augmentations as augmentations
 
 class RNoise(object):
     def __init__(self, sig):
