@@ -127,16 +127,23 @@ def cifar10_repeat_dataloaders(config, shuffle=True, valid_size=0.2, num_workers
         torch.manual_seed(42)  # For reproducibility
         indices = torch.randperm(num_train)
 
+    # Split the training dataset into training and validation sets
+    train_indices, valid_indices = indices[split:], indices[:split]
+    train_sampler = torch.utils.data.sampler.SubsetRandomSampler(train_indices)
+    valid_sampler = torch.utils.data.sampler.SubsetRandomSampler(valid_indices)
+
     # Create data loaders for training, validation, and testing
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size,
+        sampler=train_sampler,
         num_workers=0,
         pin_memory=True,
     )
     valid_loader = torch.utils.data.DataLoader(
         train_dataset,
         batch_size=batch_size,
+        sampler=valid_sampler,
         num_workers=0,
         pin_memory=True,
     )
