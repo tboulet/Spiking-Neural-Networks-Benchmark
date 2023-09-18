@@ -1,5 +1,7 @@
+import random
+import sys
+
 import numpy as np
-import random, sys
 import torch
 
 
@@ -8,12 +10,11 @@ def count_parameters(model):
 
 
 def check_versions():
-    python_version = sys.version .split(' ')[0]
+    python_version = sys.version.split(" ")[0]
     print("============== Checking Packages versions ================")
     print(f"python {python_version}")
     print(f"numpy {np.__version__}")
     print(f"pytorch {torch.__version__}")
-
 
 
 def set_seed(seed):
@@ -26,7 +27,7 @@ def set_seed(seed):
     # This flag only allows cudnn algorithms that are determinestic unlike .benchmark
     torch.backends.cudnn.deterministic = True
 
-    #this flag enables cudnn for some operations such as conv layers and RNNs, 
+    # this flag enables cudnn for some operations such as conv layers and RNNs,
     # which can yield a significant speedup.
     torch.backends.cudnn.enabled = False
 
@@ -35,4 +36,4 @@ def set_seed(seed):
     torch.backends.cudnn.benchmark = False
 
     # I don't know if this is useful, look it up.
-    #os.environ['PYTHONHASHSEED'] = str(seed)
+    # os.environ['PYTHONHASHSEED'] = str(seed)

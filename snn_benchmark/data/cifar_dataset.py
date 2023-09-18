@@ -1,9 +1,9 @@
-from utils import set_seed
-
 import torch
 import torchvision
 import torchvision.transforms as transforms
 from torchvision import transforms
+from utils import set_seed
+
 
 class Flatten(torch.nn.Module):
     def __init__(self):
@@ -26,14 +26,13 @@ class Repeat(torch.nn.Module):
         """ """
         return tensor.repeat(self.n, 1)
 
-class FlattenColor(torch.nn.Module):
 
+class FlattenColor(torch.nn.Module):
     def __init__(self):
         super().__init__()
 
     def forward(self, tensor: torch.Tensor) -> torch.Tensor:
-        """
-        """
+        """ """
         return tensor.reshape(-1, 32)
 
     def __repr__(self) -> str:
@@ -108,20 +107,28 @@ def cifar10_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
 
     return train_loader, valid_loader, test_loader
 
-def cifar10_line_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
 
+def cifar10_line_dataloaders(config, shuffle=True, valid_size=0.2, num_workers=4):
     set_seed(config.seed)
     batch_size = config.batch_size
 
-    transform = transforms.Compose([
-        transforms.ToTensor(),  # Converts images to tensors
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  # Normalize image pixel values,
-        FlattenColor(),
-    ])
+    transform = transforms.Compose(
+        [
+            transforms.ToTensor(),  # Converts images to tensors
+            transforms.Normalize(
+                (0.5, 0.5, 0.5), (0.5, 0.5, 0.5)
+            ),  # Normalize image pixel values,
+            FlattenColor(),
+        ]
+    )
 
     # Download CIFAR-10 dataset if not already downloaded
-    train_dataset = torchvision.datasets.CIFAR10(root=config.datasets_path, train=True, transform=transform, download=True)
-    test_dataset = torchvision.datasets.CIFAR10(root=config.datasets_path, train=False, transform=transform, download=True)
+    train_dataset = torchvision.datasets.CIFAR10(
+        root=config.datasets_path, train=True, transform=transform, download=True
+    )
+    test_dataset = torchvision.datasets.CIFAR10(
+        root=config.datasets_path, train=False, transform=transform, download=True
+    )
 
     # Split the training dataset into training and validation sets
     num_train = len(train_dataset)

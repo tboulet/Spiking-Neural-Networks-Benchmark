@@ -1,16 +1,13 @@
-from utils import set_seed
-
-import torch
-import torch.nn as nn
+import numpy as np
 
 # Ensure that the total number of parameters is approximately 18,000
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 
 # Base model class
 from models.model import Model
+from utils import set_seed
 
 
 class TimeSeriesCNN(Model):

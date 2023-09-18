@@ -1,10 +1,9 @@
 import os
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 SEED = 0
 np.random.seed(SEED)
@@ -44,7 +43,6 @@ def target_transform(updown):
 
 
 def HAR_dataloaders(config):
-
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     x_train = np.load(os.path.join(current_dir, "raw/x_train_WISDM.npy"))

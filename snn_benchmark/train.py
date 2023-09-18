@@ -1,31 +1,31 @@
 import fire
-
 import torch
 import utils
-
-from data.base_datasets import SHD_dataloaders, SSC_dataloaders, GSC_dataloaders
-from data.cifar_dataset import cifar10_repeat_dataloaders, cifar10_line_dataloaders, cifar10_dataloaders
-from data.iris_dataset import IRIS_dataloaders
-from data.har_dataset import HAR_dataloaders
-
-from models.ann import ANN
-from models.snn import SNN
-from models.snn_delays import SnnDelays
-from models.conv import TimeSeriesCNN
-
 from configs import (
     Config,
-    ConfigGSC,
-    ConfigSSC,
-    ConfigSHD,
-    ConfigIRIS,
-    ConfigSNNIRIS,
     ConfigANNCIFAR10,
+    ConfigGSC,
+    ConfigHAR,
+    ConfigIRIS,
+    ConfigSHD,
     ConfigSNNCIFAR10,
     ConfigSNNCIFAR10LINE,
+    ConfigSNNIRIS,
     ConfigSNNREPEATCIFAR10,
-    ConfigHAR
+    ConfigSSC,
 )
+from data.base_datasets import GSC_dataloaders, SHD_dataloaders, SSC_dataloaders
+from data.cifar_dataset import (
+    cifar10_dataloaders,
+    cifar10_line_dataloaders,
+    cifar10_repeat_dataloaders,
+)
+from data.har_dataset import HAR_dataloaders
+from data.iris_dataset import IRIS_dataloaders
+from models.ann import ANN
+from models.conv import TimeSeriesCNN
+from models.snn import SNN
+from models.snn_delays import SnnDelays
 
 config_mapping = {
     "GSC": (ConfigGSC, GSC_dataloaders, None),
@@ -45,11 +45,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"\n=====> Device = {device} \n\n")
 
 
-def launch(config_name='SNN_HAR'):
+def launch(config_name="SNN_HAR"):
     print(f"Launching with configuration : {config_name}")
     if config_name not in config_mapping:
         print(f"Config {config_name} does not exist. Using default config")
-    config, dataloaders, model = config_mapping.get(config_name, (ConfigHAR, HAR_dataloaders, None))
+    config, dataloaders, model = config_mapping.get(
+        config_name, (ConfigHAR, HAR_dataloaders, None)
+    )
     train_loader, valid_loader, test_loader = dataloaders(config)
 
     if model is None:
@@ -67,6 +69,7 @@ def launch(config_name='SNN_HAR'):
     print(f"===> Model size = {utils.count_parameters(model)}\n\n")
 
     model.train_model(train_loader, valid_loader, test_loader, device)
+
 
 if __name__ == "__main__":
     fire.Fire(launch)

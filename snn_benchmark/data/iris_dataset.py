@@ -1,10 +1,9 @@
-from utils import set_seed
-
 import torch
-from torch.utils.data import DataLoader, TensorDataset
-
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from torch.utils.data import DataLoader, TensorDataset
+from utils import set_seed
+
 
 def IRIS_dataloaders(config):
     set_seed(config.seed)

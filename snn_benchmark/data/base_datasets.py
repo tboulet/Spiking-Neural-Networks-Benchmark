@@ -1,21 +1,18 @@
-from utils import set_seed
-
-import numpy as np
-
 from typing import Callable, Optional
 
-from spikingjelly.datasets.shd import SpikingHeidelbergDigits
-from spikingjelly.datasets.shd import SpikingSpeechCommands
-from spikingjelly.datasets import pad_sequence_collate
-
+import numpy as np
 import torch
 import torchvision.transforms as transforms
-from torchaudio.transforms import Spectrogram, MelScale, AmplitudeToDB, Resample
+from spikingjelly.datasets import pad_sequence_collate
+from spikingjelly.datasets.shd import SpikingHeidelbergDigits, SpikingSpeechCommands
+from torch.utils.data import DataLoader, Dataset
 from torchaudio.datasets.speechcommands import SPEECHCOMMANDS
+from torchaudio.transforms import AmplitudeToDB, MelScale, Resample, Spectrogram
 from torchvision import transforms
-from torch.utils.data import Dataset, DataLoader
+from utils import set_seed
 
 import snn_benchmark.augmentations as augmentations
+
 
 class RNoise(object):
     def __init__(self, sig):

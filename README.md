@@ -21,6 +21,12 @@ cd spikingjelly
 pip install -e .
 ```
 
+### Human Activity Recognition (HAR)
+To use the dataset, it must be downloaded from github using:
+'''
+git lfs install
+git lfs pull
+'''
 
 
 ## Introduction

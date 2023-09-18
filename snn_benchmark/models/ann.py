@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
-
 from utils import set_seed
 
 # Base model class
 from snn_benchmark.models.model import Model
+
 
 class ANN(Model):
     def __init__(self, config):

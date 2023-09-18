@@ -1,5 +1,6 @@
-from snn_benchmark.get_hidden_size_for_right_num_params import get_number_of_parameters
 from spikingjelly.activation_based import surrogate
+
+from snn_benchmark.get_hidden_size_for_right_num_params import get_number_of_parameters
 
 
 class Config:

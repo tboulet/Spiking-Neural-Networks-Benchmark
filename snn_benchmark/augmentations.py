@@ -8,12 +8,10 @@
 # of this package.
 
 import random
-
 from typing import Any, List, Tuple, Union
 
 import torch
-
-from torch import nn, Tensor
+from torch import Tensor, nn
 from torch.distributions import Uniform
 from torch.nn import functional as F
 from torchaudio.transforms import Resample as TorchAudioResample

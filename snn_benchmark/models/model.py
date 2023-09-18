@@ -1,16 +1,15 @@
-from utils import set_seed
+import os
 from datetime import datetime
 from uuid import uuid4
-import os
 
 import numpy as np
-from tqdm import tqdm
-import wandb
-
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import torch.nn.functional as F
+import torch.optim as optim
+import wandb
+from tqdm import tqdm
+from utils import set_seed
 
 from snn_benchmark.configs import Config
 from snn_benchmark.data.base_datasets import Augs
