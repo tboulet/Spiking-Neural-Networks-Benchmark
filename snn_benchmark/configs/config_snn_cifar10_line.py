@@ -33,8 +33,8 @@ class Config:
     stateful_synapse_learnable = False
 
     n_inputs = 32
-    n_hidden_layers = 4
-    n_hidden_neurons = 400
+    n_hidden_layers = 6
+    n_hidden_neurons = 450
     n_outputs = 10
 
     sparsity_p = 0
