@@ -433,8 +433,6 @@ class Model(nn.Module):
             for i, (x, y, *_) in enumerate(tqdm(loader)):
                 y = F.one_hot(y, self.config.n_outputs).float()
 
-                y = F.one_hot(y, self.config.n_outputs).float()
-
                 # Adapt to right shape
                 if len(x.shape) == 3:
                     x = x.permute(1, 0, 2).float().to(device)  # (time, batch, neurons)
