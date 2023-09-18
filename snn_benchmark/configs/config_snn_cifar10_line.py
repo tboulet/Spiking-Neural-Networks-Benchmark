@@ -14,13 +14,13 @@ class Config:
     seed = 0
 
     # model type could be set to : 'snn_delays' |  'snn_delays_lr0' |  'snn'
-    model_type = "snn"#_delays"
+    model_type = "snn"
 
     time_step = 10
     n_bins = 5
 
     epochs = 150
-    batch_size = 512
+    batch_size = 256
 
     ################################################
     #               Model Achitecture              #
@@ -32,9 +32,9 @@ class Config:
     stateful_synapse = False
     stateful_synapse_learnable = False
 
-    n_inputs = 3072
-    n_hidden_layers = 4
-    n_hidden_neurons = 250
+    n_inputs = 32
+    n_hidden_layers = 6
+    n_hidden_neurons = 450
     n_outputs = 10
 
     sparsity_p = 0
@@ -137,7 +137,7 @@ class Config:
     # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names.
 
     use_wandb = False
-    wandb_token = "56b9cf4d7820ac3d475765431891c12aa399e027"
+    wandb_token = "your_wandb_token"
     wandb_project_name = "SpikedNN"
 
     run_name = "training"

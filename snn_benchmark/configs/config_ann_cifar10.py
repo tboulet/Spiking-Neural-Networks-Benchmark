@@ -1,28 +1,27 @@
+from snn_benchmark.get_hidden_size_for_right_num_params import get_number_of_parameters
 from spikingjelly.activation_based import surrogate
 
 
 class Config:
-
     ################################################
     #            General configuration             #
     ################################################
     debug = False
 
     # dataset could be set to either 'shd', 'ssc' or 'gsc', change datasets_path accordingly.
-    dataset = 'cifar10'
-    datasets_path = 'Datasets/CIFAR10'
+    dataset = "cifar10"
+    datasets_path = "Datasets/CIFAR10"
 
     seed = 0
 
     # model type could be set to : 'snn_delays' |  'snn_delays_lr0' |  'snn'
-    model_type = 'snn_delays'
-
+    model_type = "ann"
 
     time_step = 10
     n_bins = 5
 
     epochs = 150
-    batch_size = 512
+    batch_size = 256
 
     ################################################
     #               Model Achitecture              #
@@ -36,7 +35,7 @@ class Config:
 
     n_inputs = 3072
     n_hidden_layers = 4
-    n_hidden_neurons = 875
+    n_hidden_neurons = 1382
     n_outputs = 10
 
     sparsity_p = 0
@@ -69,11 +68,11 @@ class Config:
     weight_decay = 1e-5
 
     lr_w = 1e-3
-    lr_pos = 100*lr_w   if model_type =='snn_delays' else 0
+    lr_pos = 100 * lr_w if model_type == "snn_delays" else 0
 
     # 'one_cycle', 'cosine_a', 'none'
-    scheduler_w = 'one_cycle'
-    scheduler_pos = 'cosine_a'   if model_type =='snn_delays' else 'none'
+    scheduler_w = "one_cycle"
+    scheduler_pos = "cosine_a" if model_type == "snn_delays" else "none"
 
     # for one cycle
     max_lr_w = 5 * lr_w
@@ -90,8 +89,10 @@ class Config:
     decrease_sig_method = "exp"
     kernel_count = 1
 
-    max_delay = 250//time_step
-    max_delay = max_delay if max_delay%2==1 else max_delay+1 # to make kernel_size an odd number
+    max_delay = 250 // time_step
+    max_delay = (
+        max_delay if max_delay % 2 == 1 else max_delay + 1
+    )  # to make kernel_size an odd number
 
     # For constant sigma without the decreasing policy, set model_type == 'snn_delays' and sigInit = 0.23 and final_epoch = 0
     sigInit = max_delay // 2 if model_type == "snn_delays" else 0
@@ -137,12 +138,16 @@ class Config:
     # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names.
 
     use_wandb = True
-    wandb_token = "56b9cf4d7820ac3d475765431891c12aa399e027"
+    wandb_token = "your_wandb_token"
     wandb_project_name = "SpikedNN"
 
     run_name = "training"
 
-    run_info = f"_{model_type}_{dataset}_{time_step}ms_bins={n_bins}"
+    # run_info = f'_{model_type}_{dataset}_{time_step}ms_bins={n_bins}'
+    n_param = get_number_of_parameters(
+        n_inputs, n_hidden_layers, n_outputs, n_hidden_neurons
+    )
+    run_info = f"_{model_type}_{dataset}_{n_param}parameters"
 
     wandb_run_name = run_name + f"_seed={seed}" + run_info
     wandb_group_name = run_name + run_info
@@ -156,6 +161,4 @@ class Config:
     )
     wandb_group_name_finetuning = wandb_group_name.replace("(Pre-train)", "(Fine-tune)")
 
-    wandb_run_name_finetuning = wandb_run_name.replace('(Pre-train)',
-                                       f'(Fine-tune_lr={lr_w_finetuning:.1e}->{max_lr_w_finetuning:.1e}_dropout={dropout_p_finetuning}_{spiking_neuron_type_finetuning}_SS={stateful_synapse_learnable_finetuning})')
-    wandb_group_name_finetuning = wandb_group_name.replace('(Pre-train)', '(Fine-tune)')
+    save_model_path_finetuning = f"{wandb_run_name_finetuning}.pt"

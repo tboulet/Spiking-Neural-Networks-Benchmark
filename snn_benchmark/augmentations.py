@@ -2,9 +2,9 @@
 #
 # All rights reserved.
 #
-# This file is part of the ConvNeXt-Dcls-Audio package, and 
+# This file is part of the ConvNeXt-Dcls-Audio package, and
 # is released under the "MIT License Agreement".
-# Please see the LICENSE file that should have been included as part 
+# Please see the LICENSE file that should have been included as part
 # of this package.
 
 import random
@@ -229,7 +229,7 @@ class Resample(nn.Module):
         """
         if interpolation not in self.INTERPOLATIONS:
             raise ValueError(
-                f'Invalid argument mode interpolation={interpolation}. Must be one of {self.INTERPOLATIONS}.'
+                f"Invalid argument mode interpolation={interpolation}. Must be one of {self.INTERPOLATIONS}."
             )
 
         super().__init__()
@@ -258,7 +258,9 @@ class Resample(nn.Module):
             data = self.resample_nearest(data, rate)
         elif self.interpolation == "linear":
             sampling_rate = 32000
-            tchaudio_resample = TorchAudioResample(sampling_rate, int(sampling_rate * rate))
+            tchaudio_resample = TorchAudioResample(
+                sampling_rate, int(sampling_rate * rate)
+            )
             data = tchaudio_resample(data)
         else:
             raise ValueError(
@@ -339,6 +341,7 @@ class SpeedPerturbation(nn.Module):
 
 class PadOrTruncate(object):
     """Pad all audio to specific length."""
+
     def __init__(self, audio_length):
         self.audio_length = audio_length
 
@@ -346,17 +349,22 @@ class PadOrTruncate(object):
         if len(sample) <= self.audio_length:
             return F.pad(sample, (0, self.audio_length - sample.size(-1)))
         else:
-            return sample[0: self.audio_length]
+            return sample[0 : self.audio_length]
+
     def __repr__(self):
         return f"PadOrTruncate(audio_length={self.audio_length})"
+
 
 class RandomRoll(object):
     def __init__(self, dims):
         self.dims = dims
+
     def __call__(self, sample):
-        shifts = [torch.randint(-sample.size(dim),
-                                sample.size(dim),
-                                size=(1,)) for dim in self.dims]
+        shifts = [
+            torch.randint(-sample.size(dim), sample.size(dim), size=(1,))
+            for dim in self.dims
+        ]
         return torch.roll(sample, shifts, self.dims)
+
     def __repr__(self):
         return f"RandomRoll(dims={self.dims})"
