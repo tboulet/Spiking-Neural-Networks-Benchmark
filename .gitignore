@@ -8,3 +8,5 @@ venv/
 train_*.py
 *.egg-info/*
 snnvenv/
+
+.vscode/
