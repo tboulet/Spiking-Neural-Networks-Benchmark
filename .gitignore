@@ -8,3 +8,5 @@ venv/
 snnvenv/
 
 snn_benchmark.egg-info/
+
+.vscode/
