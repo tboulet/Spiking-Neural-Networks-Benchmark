@@ -7,6 +7,7 @@ setup(
     packages=find_packages(),  # Automatically discover and include all packages
     install_requires=[
         "torch",
+        "torchaudio",
         "torchvision",
         "numpy",
         "scipy",
@@ -17,16 +18,6 @@ setup(
         "h5py",
         "tqdm",
         "scikit-learn",
-        "fire"
-    ],
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "fire",
     ],
 )

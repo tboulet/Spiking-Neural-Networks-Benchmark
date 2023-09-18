@@ -67,9 +67,9 @@ class Config:
 
     lr_w = 1e-3
     lr_pos = 100*lr_w   if model_type =='snn_delays' else 0
-    
+
     # 'one_cycle', 'cosine_a', 'none'
-    scheduler_w = 'one_cycle'    
+    scheduler_w = 'one_cycle'
     scheduler_pos = 'cosine_a'   if model_type =='snn_delays' else 'none'
 
 
@@ -91,7 +91,7 @@ class Config:
 
     max_delay = 300//time_step
     max_delay = max_delay if max_delay%2==1 else max_delay+1 # to make kernel_size an odd number
-    
+
     # For constant sigma without the decreasing policy, set model_type == 'snn_delays' and sigInit = 0.23 and final_epoch = 0
     sigInit = max_delay // 2        if model_type == 'snn_delays' else 0
     final_epoch = (1*epochs)//4     if model_type == 'snn_delays' else 0
@@ -136,10 +136,10 @@ class Config:
     #############################################
     #                      Wandb                #
     #############################################
-    # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names. 
+    # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names.
 
-    use_wandb = True
-    wandb_token = 'fa0b3310c3ff3fd0e8a4f58dca4b151cd20902da'
+    use_wandb = False
+    wandb_token = "your_wandb_token"
     wandb_project_name = 'Human_Activity_Recognition'
 
     run_name = 'Human_Activity_Recognition'
@@ -154,7 +154,7 @@ class Config:
     save_model_path = f'{wandb_run_name}_REPL.pt'
 
 
-    wandb_run_name_finetuning = wandb_run_name.replace('(Pre-train)', 
+    wandb_run_name_finetuning = wandb_run_name.replace('(Pre-train)',
                                        f'(Fine-tune_lr={lr_w_finetuning:.1e}->{max_lr_w_finetuning:.1e}_dropout={dropout_p_finetuning}_{spiking_neuron_type_finetuning}_SS={stateful_synapse_learnable_finetuning})')
     wandb_group_name_finetuning = wandb_group_name.replace('(Pre-train)', '(Fine-tune)')
 

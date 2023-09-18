@@ -137,8 +137,8 @@ class Config:
     #############################################
     # If use_wand is set to True, specify your wandb api token in wandb_token and the project and run names.
 
-    use_wandb = True
-    wandb_token = "56b9cf4d7820ac3d475765431891c12aa399e027"
+    use_wandb = False
+    wandb_token = "your_wandb_token"
     wandb_project_name = "SpikedNN"
 
     run_name = "training"
