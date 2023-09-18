@@ -14,7 +14,7 @@ class Config:
     seed = 0
 
     # model type could be set to : 'snn_delays' |  'snn_delays_lr0' |  'snn'
-    model_type = 'snn_delays'
+    model_type = 'snn'
 
 
     time_step = 10

@@ -5,3 +5,6 @@ Datasets
 models/
 spikingjelly/
 venv/
+snnvenv/
+
+snn_benchmark.egg-info/
